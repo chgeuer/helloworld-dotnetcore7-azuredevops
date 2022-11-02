@@ -14,26 +14,22 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops&tabs=dotnetfive
 steps:
 - task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
   inputs:
-    version: '7.0.x'
+    version: 7.0.x
+    performMultiLevelLookup: true
     includePreviewVersions: true
 
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
-    restoreSolution: '$(solution)'
+    command: restore
+    feedsToUse: 'select'
 
-- task: MSBuild@1
+- task: DotNetCoreCLI@2
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=false /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-#- task: VSTest@2
-# inputs:
-#  platform: '$(buildPlatform)'
-#  configuration: '$(buildConfiguration)'
+    command: build
+    projects: 'src/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
