@@ -24,11 +24,14 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
+  displayName: 'Nuget restore'
   inputs:
     command: restore
     feedsToUse: 'select'
+    projects: 'src/Net7Solutions/Net7PlaceHolder.sln'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build'
   inputs:
     command: build
     projects: 'src/**/*.csproj'
